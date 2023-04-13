@@ -5,6 +5,7 @@ import application.config.kafka.KafkaProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -44,6 +45,12 @@ public class AbstractEvent {
                     MimeTypeUtils.APPLICATION_JSON
                 )
                 .setHeader("type", getEventType())
+                .setHeader(
+                    // modify MESSAGE_KEY value with an appropriate it later.
+                    KafkaHeaders.MESSAGE_KEY,
+                    new String("MsgKey-" + Math.floor(Math.random() * 10))
+                        .getBytes()
+                )
                 .build()
         );
     }

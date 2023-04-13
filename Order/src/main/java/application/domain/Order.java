@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
+import org.springframework.context.ApplicationContext;
 
 @Entity
 @Table(name = "Order_table")
@@ -27,38 +28,41 @@ public class Order {
 
     @PostPersist
     public void onPostPersist() {
-        //Following code causes dependency to external APIs
-        // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
-
-        application.external.DecreaseStockCommand decreaseStockCommand = new application.external.DecreaseStockCommand();
-        // mappings goes here
-        OrderApplication.applicationContext
-            .getBean(application.external.StorageService.class)
-            .decreaseStock(/* get???(), */decreaseStockCommand);
-
         OrderPlaced orderPlaced = new OrderPlaced(this);
         orderPlaced.publishAfterCommit();
+        /** TODO:  REST API Call to Storage
+        application.external.DecreaseStockCommand decreaseStockCommand = new application.external.DecreaseStockCommand();
+        
+        // TODO: fill the command properties to invoke below
+        
+        applicationContext().getBean(application.external.StorageService.class)
+           .decreaseStock({TODO: please put the id}, decreaseStockCommand);
+        */
+
     }
 
     @PostRemove
     public void onPostRemove() {
-        //Following code causes dependency to external APIs
-        // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
-
-        application.external.IncreaseStockCommand increaseStockCommand = new application.external.IncreaseStockCommand();
-        // mappings goes here
-        OrderApplication.applicationContext
-            .getBean(application.external.StorageService.class)
-            .increaseStock(/* get???(), */increaseStockCommand);
-
         OrderCanceled orderCanceled = new OrderCanceled(this);
         orderCanceled.publishAfterCommit();
+        /** TODO:  REST API Call to Storage
+        application.external.IncreaseStockCommand increaseStockCommand = new application.external.IncreaseStockCommand();
+        
+        // TODO: fill the command properties to invoke below
+        
+        applicationContext().getBean(application.external.StorageService.class)
+           .increaseStock({TODO: please put the id}, increaseStockCommand);
+        */
+
     }
 
     public static OrderRepository repository() {
-        OrderRepository orderRepository = OrderApplication.applicationContext.getBean(
-            OrderRepository.class
-        );
+        OrderRepository orderRepository = applicationContext()
+            .getBean(OrderRepository.class);
         return orderRepository;
+    }
+
+    public static ApplicationContext applicationContext() {
+        return OrderApplication.applicationContext;
     }
 }

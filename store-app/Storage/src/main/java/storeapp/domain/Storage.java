@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
+import org.springframework.context.ApplicationContext;
 import storeapp.StorageApplication;
 import storeapp.domain.StockDecreased;
 import storeapp.domain.StockIncreased;
@@ -23,19 +24,31 @@ public class Storage {
     public void onPostPersist() {
         StockIncreased stockIncreased = new StockIncreased(this);
         stockIncreased.publishAfterCommit();
+    }
 
+    @PostPersist
+    public void onPostPersist() {
         StockDecreased stockDecreased = new StockDecreased(this);
         stockDecreased.publishAfterCommit();
     }
 
     public static StorageRepository repository() {
-        StorageRepository storageRepository = StorageApplication.applicationContext.getBean(
-            StorageRepository.class
-        );
+        StorageRepository storageRepository = applicationContext()
+            .getBean(StorageRepository.class);
         return storageRepository;
     }
 
-    public void increaseStock(IncreaseStockCommand increaseStockCommand) {}
+    public static ApplicationContext applicationContext() {
+        return StorageApplication.applicationContext;
+    }
 
-    public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {}
+    public void increaseStock(IncreaseStockCommand increaseStockCommand) {
+        // implement the business logics here:
+
+    }
+
+    public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
+        // implement the business logics here:
+
+    }
 }

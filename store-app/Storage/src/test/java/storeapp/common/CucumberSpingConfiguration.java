@@ -1,8 +1,8 @@
-package application.common;
+package storeapp.common;
 
-import application.StorageApplication;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import storeapp.StorageApplication;
 
 @CucumberContextConfiguration
 @SpringBootTest(classes = { StorageApplication.class })

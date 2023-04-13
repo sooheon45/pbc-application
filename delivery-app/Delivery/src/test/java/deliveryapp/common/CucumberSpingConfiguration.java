@@ -1,6 +1,6 @@
-package application.common;
+package deliveryapp.common;
 
-import application.DeliveryApplication;
+import deliveryapp.DeliveryApplication;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
